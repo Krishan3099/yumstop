@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "905700731673",
+    "project_id": "yum-stop",
+    "storage_bucket": "yum-stop.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:905700731673:android:76e569f620cb02c72ff388",
+        "android_client_info": {
+          "package_name": "com.play.freso.foodorderingapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "905700731673-b2ij70mekvcosne98fvbj6km1b3bprbl.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAYvOIOXx_A4qusoE1qhlLy9fmDEBSgNcI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "905700731673-b2ij70mekvcosne98fvbj6km1b3bprbl.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

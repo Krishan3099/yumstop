@@ -1,0 +1,22 @@
+<resources>
+    <string name="app_name">FoodOrderingApp</string>
+    <string name="appname">YumStop</string>
+    <string name="enter_email">Username</string>
+    <string name="button_login">Login</string>
+    <string name="button_register">Register</string>
+    <string name="button_signup">Sign Up</string>
+    <string name="text_password">Password</string>
+    <string name="text_re_password">Re-enter Password</string>
+    <string name="add_to_cart">Add to Cart</string>
+    <string name="food_price">Food Price</string>
+    <string name="food_desc">Food Desc</string>
+    <string name="food_title">Food Title</string>
+    <string-array name="category_list">
+        <item>Breakfast</item>
+        <item>Lunch</item>
+        <item>Sides</item>
+        <item>Dinner</item>
+        <item>Dessert</item>
+        <item>Drinks</item>
+    </string-array>
+</resources>
