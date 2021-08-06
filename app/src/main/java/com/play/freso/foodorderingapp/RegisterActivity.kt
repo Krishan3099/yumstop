@@ -5,45 +5,24 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
-import android.view.View
-import android.widget.Button
-import android.widget.EditText
 import android.widget.Toast
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.ktx.Firebase
-import com.play.freso.foodorderingapp.datasource.FoodDataSource
-import com.play.freso.foodorderingapp.datasource.UserDataSource
+import androidx.lifecycle.ViewModelProvider
+import com.play.freso.foodorderingapp.viewmodels.LoginRegisterViewModel
 import kotlinx.android.synthetic.main.register_activity.*
+import kotlinx.android.synthetic.main.register_activity.emailText
+import kotlinx.android.synthetic.main.register_activity.passwordText
+import kotlinx.android.synthetic.main.register_activity.regButton
 
 class RegisterActivity : AppCompatActivity() {
 
-    private lateinit var auth: FirebaseAuth
-
-
-    private val creds = UserDataSource.createDataSet()
-
-//    private val username by lazy{
-//        findViewById<EditText>(R.id.editTextTextPersonName)
-//    }
-//    private val password by lazy{
-//        findViewById<EditText>(R.id.editTextTextPassword)
-//    }
-//
-//    private val re_password by lazy{
-//        findViewById<EditText>(R.id.editTextTextPassword2)
-//    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.register_activity)
-
-
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.title = "Register an Account"
 
-        auth = Firebase.auth
+        val viewModel = ViewModelProvider(this)[LoginRegisterViewModel::class.java]
 
 
         emailText.addTextChangedListener(object:TextWatcher{
@@ -68,43 +47,37 @@ class RegisterActivity : AppCompatActivity() {
 
 
         regButton.setOnClickListener{
-            val input_username = emailText.text.toString()
-            val input_password = passwordText.text.toString()
-            val re_input_password = passwordText2.text.toString()
+            val inputUsername = emailText.text.toString()
+            val inputPassword = passwordText.text.toString()
+            val reInputPassword = passwordText2.text.toString()
 
-            if(input_username.isEmpty() || input_password.isEmpty() || re_input_password.isEmpty()){
+            if(inputUsername.isEmpty() || inputPassword.isEmpty() || reInputPassword.isEmpty()){
                 Toast.makeText(this, "Please input all fields", Toast.LENGTH_SHORT).show()
-            }else if(input_password != re_input_password){
+            }else if(inputPassword != reInputPassword){
                 Toast.makeText(this, "Passwords do not match. Please re-input.", Toast.LENGTH_SHORT).show()
                 passwordText.setText("")
                 passwordText2.setText("")
 
                 passwordText.requestFocus()
             }else{
-                createAccount(input_username, input_password)
+                viewModel.userid.observe(this, {
+
+                    viewModel.signUp(inputUsername, inputPassword)
+
+                    if(it == null){
+                        Toast.makeText(baseContext, "Authentication failed.", Toast.LENGTH_SHORT).show()
+                    }else{
+
+                        Toast.makeText(this, "Registered", Toast.LENGTH_SHORT).show()
+                        val intent = Intent(this, CatItemsActivity::class.java).apply{
+                            putExtra("user", it)
+                        }
+
+                        startActivity(intent)
+                    }
+                })
             }
         }
 
-    }
-
-    private fun createAccount(username: String, pass: String){
-        auth.createUserWithEmailAndPassword(username, pass)
-            .addOnCompleteListener(this) { task ->
-                if (task.isSuccessful) {
-                    // Sign in success, update UI with the signed-in user's information
-                    Log.d("user_auth", "createUserWithEmail:success")
-                    val user = auth.currentUser
-                    Toast.makeText(this, "Registered", Toast.LENGTH_SHORT).show()
-                    val intent = Intent(this, CatItemsActivity::class.java).apply{
-//                        putExtra(user.)
-                    }
-                    startActivity(intent)
-                } else {
-                    // If sign in fails, display a message to the user.
-                    Log.w("user_auth", "createUserWithEmail:failure", task.exception)
-                    Toast.makeText(baseContext, "Authentication failed.",
-                        Toast.LENGTH_SHORT).show()
-                }
-            }
     }
 }

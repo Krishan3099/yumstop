@@ -7,13 +7,12 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.play.freso.foodorderingapp.R
 
-class CatRecyclerAdapter(var cats:ArrayList<String>, onNoteListen: OnNoteListener): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class CatRecyclerAdapter(onNoteListen: OnNoteListener): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    private var items = ArrayList<String>()
+    private var items: List<String> = ArrayList()
     private var onNoteListener: OnNoteListener
 
     init {
-        items = cats
         onNoteListener = onNoteListen
 
     }
@@ -38,6 +37,10 @@ class CatRecyclerAdapter(var cats:ArrayList<String>, onNoteListen: OnNoteListene
         return items.size
     }
 
+
+    fun submitList(catList: List<String>){
+        items = catList
+    }
 
     class CatItemViewHolder constructor(
         catView: View,

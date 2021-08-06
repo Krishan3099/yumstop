@@ -4,84 +4,50 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
-import com.play.freso.foodorderingapp.adapters.FoodRecyclerAdapter
 import com.play.freso.foodorderingapp.adapters.MyCartAdapter
-import com.play.freso.foodorderingapp.models.CartModel
-import com.play.freso.foodorderingapp.models.FoodItemPost
+import com.play.freso.foodorderingapp.models.OrderItem
+import com.play.freso.foodorderingapp.viewmodels.UserOrderViewModel
 import kotlinx.android.synthetic.main.activity_cart.*
 
 class CartActivity : AppCompatActivity() {
 
 
-    private val users_db = Firebase.firestore
-    private val items_db = Firebase.firestore
-    private lateinit var user: String
-    private lateinit var orderMap: MutableMap<String, String>
+    private lateinit var viewModel: UserOrderViewModel
+    private lateinit var user_id: String
     private lateinit var cartAdapter: MyCartAdapter
-    private var cartModelList = ArrayList<CartModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_cart)
-        user = intent.getStringExtra("user") ?: "whoops :,)"
+        user_id = intent.getStringExtra("user") ?: "whoops :,)"
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.title = "Cart"
 
         //loadCartFromFirebase or previous activity
+        viewModel = ViewModelProvider(this)[UserOrderViewModel::class.java]
+        viewModel.loadUser(user_id)
+        viewModel.loadCartItems(user_id)
 
 
-        users_db
-            .collection("users")
-            .document(user)
-            .get()
-            .addOnSuccessListener { result ->
-                Log.d("check", "WHAT DOES THIS SAY ${result["order"]} ")
-                (result["order"] as MutableMap<String, String>).forEach { (k, v) ->
-                    items_db
-                        .collection("food_items")
-                        .document(k)
-                        .get()
-                        .addOnSuccessListener { res ->
-                            Log.d("check", "WHAT DOES THIS SAY ${res} ")
-                            Log.d("check", "WHAT DOES THIS SAY ${res["name"] as String} ")
-                            cartModelList.add(
-                                CartModel(
-                                    k,
-                                    res["name"] as String,
-                                    res["img"] as String,
-                                    res["price"] as String,
-                                    v.toInt(),
-                                    0f
-                                )
-                            )
-                            Log.d("timing", "BeepBoop")
-                    }
-                        .addOnFailureListener{
-                            Log.w("cart", "Error getting documents.", it)
-                    }
-                        .addOnCompleteListener{
-                            recycler_cart.apply{cartAdapter.submitList(cartModelList)}
-                        }
 
-                }
 
-                Log.d("timing", "Well here's why it doesn't work")
-                init()
-                onLoadCartSuccess(cartModelList)
 
+        init()
+
+
+        viewModel.orderItems.observe(this, {
+            recycler_cart.apply{
+                adapter = cartAdapter
+                cartAdapter.submitList(it)
             }
-            .addOnFailureListener { exception ->
-                Log.w("cart", "Error getting documents.", exception)
-            }
-            .addOnCompleteListener{
-                Log.d("timing", "Well here's why it doesn't twerk")
-            }
-
+            onLoadCartSuccess(it)
+        })
 
     }
 
@@ -96,8 +62,6 @@ class CartActivity : AppCompatActivity() {
             layoutManager = LinearLayoutManager(this@CartActivity)
             addItemDecoration(DividerItemDecoration(this@CartActivity, (layoutManager as LinearLayoutManager).orientation))
             cartAdapter = MyCartAdapter(this@CartActivity)
-            adapter = cartAdapter
-            cartAdapter.submitList(cartModelList)
         }
 
 
@@ -114,7 +78,7 @@ class CartActivity : AppCompatActivity() {
         return super.onContextItemSelected(item)
     }
 
-    private fun onLoadCartSuccess(cartModelList:List<CartModel>){
+    private fun onLoadCartSuccess(cartModelList:List<OrderItem>){
         var sum = 0.0
         for(cartModel in cartModelList!!){
             sum+= cartModel!!.totalPrice

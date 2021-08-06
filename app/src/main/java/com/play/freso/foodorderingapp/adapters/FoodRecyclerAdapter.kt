@@ -9,10 +9,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.play.freso.foodorderingapp.R
-import com.play.freso.foodorderingapp.models.FoodItemPost
+import com.play.freso.foodorderingapp.models.FoodItem
 
 class FoodRecyclerAdapter(onNoteListen: OnNoteListener):  RecyclerView.Adapter<RecyclerView.ViewHolder>(){
-    private var items: List<FoodItemPost> = ArrayList()
+    private var items: List<FoodItem> = ArrayList()
     private var onNoteListener: OnNoteListener
 
     init {
@@ -40,7 +40,7 @@ class FoodRecyclerAdapter(onNoteListen: OnNoteListener):  RecyclerView.Adapter<R
         return items.size
     }
 
-    fun submitList(foodList: List<FoodItemPost>){
+    fun submitList(foodList: List<FoodItem>){
         items = foodList
     }
 
@@ -57,7 +57,7 @@ class FoodRecyclerAdapter(onNoteListen: OnNoteListener):  RecyclerView.Adapter<R
             itemView.setOnClickListener(this)
             onNoteListener = onNoteListen
         }
-        fun bind(foodItemPost: FoodItemPost){
+        fun bind(foodItemPost: FoodItem){
             food_name.setText(foodItemPost.name)
             food_price.setText(foodItemPost.price.toString())
 

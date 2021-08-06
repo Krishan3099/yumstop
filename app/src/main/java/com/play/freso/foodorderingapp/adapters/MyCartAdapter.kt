@@ -9,19 +9,16 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.google.firebase.database.FirebaseDatabase
 import com.play.freso.foodorderingapp.R
-import com.play.freso.foodorderingapp.models.CartModel
-import com.play.freso.foodorderingapp.models.FoodItemPost
+import com.play.freso.foodorderingapp.models.OrderItem
 
-//import kotlinx.android.synthetic.main.layout_cart_item.*
 
 class MyCartAdapter(
     private val context: Context,
 
 ): RecyclerView.Adapter<MyCartAdapter.MyCartViewHolder>() {
 
-    private var cartModelList: List<CartModel> = ArrayList()
+    private var cartModelList: List<OrderItem> = ArrayList()
 
     class MyCartViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
         var btnMinus:ImageView? = null
@@ -73,13 +70,13 @@ class MyCartAdapter(
         }
     }
 
-    private fun plusCartItem(holder: MyCartViewHolder, cartModel: CartModel) {
+    private fun plusCartItem(holder: MyCartViewHolder, cartModel: OrderItem) {
         cartModel.quantity += 1
         cartModel.totalPrice = cartModel.quantity * cartModel.price!!.toFloat()
         holder.txtQuantity!!.text = StringBuilder("").append(cartModel.quantity)
     }
 
-    private fun minusCartItem(holder: MyCartViewHolder, cartModel: CartModel) {
+    private fun minusCartItem(holder: MyCartViewHolder, cartModel: OrderItem) {
         if(cartModel.quantity > 1)
         {
             cartModel.quantity -= 1
@@ -94,7 +91,7 @@ class MyCartAdapter(
         return cartModelList.size
     }
 
-    fun submitList(cartList: List<CartModel>){
+    fun submitList(cartList: List<OrderItem>){
         cartModelList = cartList
     }
 }
