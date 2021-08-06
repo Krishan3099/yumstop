@@ -31,9 +31,10 @@ class LoginActivity : AppCompatActivity() {
 
             }else{
 
+                viewModel.signIn(inputUsername, inputPassword)
                 viewModel.userid.observe(this, {
 
-                    viewModel.signIn(inputUsername, inputPassword)
+
 
                     if(it == null){
 
@@ -44,7 +45,7 @@ class LoginActivity : AppCompatActivity() {
 
                     }else{
 
-                        val intent = Intent(this, CatItemsActivity::class.java).apply{
+                        val intent = Intent(this@LoginActivity, CatItemsActivity::class.java).apply{
                             putExtra("user", it)
                         }
 

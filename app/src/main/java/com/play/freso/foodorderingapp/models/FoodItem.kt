@@ -2,8 +2,6 @@ package com.play.freso.foodorderingapp.models
 
 import android.os.Parcel
 import android.os.Parcelable
-import android.util.Log
-import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.google.firebase.firestore.DocumentSnapshot
 
 data class FoodItem(
@@ -57,10 +55,6 @@ data class FoodItem(
 
                 FoodItem(id, cat, name, price, desc, img)
             } catch (e: Exception) {
-                Log.e(TAG, "Error converting food item", e)
-                FirebaseCrashlytics.getInstance().log("Error converting food item")
-                FirebaseCrashlytics.getInstance().setCustomKey("userId", id)
-                FirebaseCrashlytics.getInstance().recordException(e)
                 null
             }
         }

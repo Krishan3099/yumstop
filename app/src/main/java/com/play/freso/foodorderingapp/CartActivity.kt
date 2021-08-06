@@ -7,8 +7,6 @@ import android.view.MenuItem
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.firebase.firestore.ktx.firestore
-import com.google.firebase.ktx.Firebase
 import com.play.freso.foodorderingapp.adapters.MyCartAdapter
 import com.play.freso.foodorderingapp.models.OrderItem
 import com.play.freso.foodorderingapp.viewmodels.UserOrderViewModel
@@ -31,15 +29,10 @@ class CartActivity : AppCompatActivity() {
 
         //loadCartFromFirebase or previous activity
         viewModel = ViewModelProvider(this)[UserOrderViewModel::class.java]
-        viewModel.loadUser(user_id)
         viewModel.loadCartItems(user_id)
 
 
-
-
-
         init()
-
 
         viewModel.orderItems.observe(this, {
             recycler_cart.apply{

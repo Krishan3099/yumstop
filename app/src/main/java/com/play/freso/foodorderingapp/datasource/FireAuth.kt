@@ -1,15 +1,11 @@
 package com.play.freso.foodorderingapp.datasource
 
 import android.util.Log
-import android.widget.Toast
-import com.google.firebase.auth.FirebaseAuth
+
 import com.google.firebase.auth.ktx.auth
-import com.google.firebase.crashlytics.FirebaseCrashlytics
-import com.google.firebase.firestore.FirebaseFirestore
+
 import com.google.firebase.ktx.Firebase
-import com.play.freso.foodorderingapp.CatItemsActivity
-import com.play.freso.foodorderingapp.models.User
-import com.play.freso.foodorderingapp.models.User.Companion.toUser
+
 import kotlinx.coroutines.tasks.await
 import java.lang.Exception
 
@@ -41,10 +37,6 @@ object FireAuth {
         }
     }
 
-    //maybe this or maybe just have another dao for orders
-    suspend fun getOrderData(userId: String): User? {
-        TODO()
-    }
 
 
 //    auth.createUserWithEmailAndPassword(username, pass)

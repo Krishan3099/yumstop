@@ -15,6 +15,13 @@ import com.play.freso.foodorderingapp.viewmodels.FoodItemListViewModel
 import com.play.freso.foodorderingapp.viewmodels.UserOrderViewModel
 import kotlinx.android.synthetic.main.activity_food_details.*
 import kotlinx.android.synthetic.main.activity_food_details.food_price
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import com.google.android.gms.tasks.Tasks
+import kotlinx.coroutines.tasks.await
+
+import com.google.firebase.auth.AuthResult
+import java.util.concurrent.ExecutionException
 
 
 class FoodDetailsActivity : AppCompatActivity() {
@@ -43,7 +50,8 @@ class FoodDetailsActivity : AppCompatActivity() {
 
 
         viewModel = ViewModelProvider(this)[UserOrderViewModel::class.java]
-        viewModel.loadUser(user_id)
+
+
         viewModel.loadCart(user_id)
 
 
@@ -65,12 +73,14 @@ class FoodDetailsActivity : AppCompatActivity() {
         }
 
 
-        viewModel.order.observe(this,{
-            add_button.setOnClickListener{
+
+        add_button.setOnClickListener{
+
                 viewModel.addToOrder(food_id, quantity)
-                onBackPressed()
-            }
-        })
+
+            onBackPressed()
+        }
+
 
 
 

@@ -1,7 +1,6 @@
 package com.play.freso.foodorderingapp.datasource
 
 import android.util.Log
-import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.google.firebase.firestore.FirebaseFirestore
 import com.play.freso.foodorderingapp.models.FoodItem
 import com.play.freso.foodorderingapp.models.FoodItem.CREATOR.toFoodItem
@@ -19,13 +18,11 @@ object FirebaseService {
     suspend fun getProfileData(userId: String): User? {
         val db = FirebaseFirestore.getInstance()
         return try {
+            Log.d("pikachu", "$userId")
             db.collection("users")
                 .document(userId).get().await().toUser()
         } catch (e: Exception) {
             Log.e(TAG, "Error getting user details", e)
-            FirebaseCrashlytics.getInstance().log("Error getting user details")
-            FirebaseCrashlytics.getInstance().setCustomKey("user id", "xpertSlug")
-            FirebaseCrashlytics.getInstance().recordException(e)
             null
         }
     }
@@ -41,9 +38,6 @@ object FirebaseService {
             cats
         } catch (e: Exception) {
             Log.e(TAG, "Error getting categories", e)
-            FirebaseCrashlytics.getInstance().log("Error getting categories")
-            FirebaseCrashlytics.getInstance().setCustomKey("user id", "xpertSlug")
-            FirebaseCrashlytics.getInstance().recordException(e)
             emptyList()
         }
     }
@@ -61,24 +55,22 @@ object FirebaseService {
             foodItems
         } catch (e: Exception) {
             Log.e(TAG, "Error getting categories", e)
-            FirebaseCrashlytics.getInstance().log("Error getting categories")
-            FirebaseCrashlytics.getInstance().setCustomKey("user id", "xpertSlug")
-            FirebaseCrashlytics.getInstance().recordException(e)
             emptyList()
         }
     }
 
 
-    suspend fun getOrderData(order_number: String): MutableMap<String, Array<String>> {
+    suspend fun getOrderData(order_number: String): MutableMap<String, ArrayList<String>> {
         val db = FirebaseFirestore.getInstance()
-        lateinit var orderItems: MutableMap<String, Array<String>>
+        var orderItems: MutableMap<String, ArrayList<String>> = mutableMapOf()
+
 
         return try {
             db.collection("orders")
                 .document(order_number)
                 .get().await().data!!.forEach{
                     val item_key = it.key.toString()
-                    val item: Array<String> = it.value as Array<String>
+                    val item: ArrayList<String> = it.value as ArrayList<String>
                     orderItems[item_key] = item
 
 
@@ -93,14 +85,11 @@ object FirebaseService {
             orderItems
         } catch (e: Exception) {
             Log.e(TAG, "Error getting categories", e)
-            FirebaseCrashlytics.getInstance().log("Error getting categories")
-            FirebaseCrashlytics.getInstance().setCustomKey("user id", "xpertSlug")
-            FirebaseCrashlytics.getInstance().recordException(e)
-            emptyMap<String, Array<String>>() as MutableMap<String, Array<String>>
+            emptyMap<String, Array<String>>() as MutableMap<String, ArrayList<String>>
         }
     }
 
-    suspend fun getOrderListItems(order: MutableMap<String, Array<String>>): List<OrderItem>? {
+    suspend fun getOrderListItems(order: MutableMap<String, ArrayList<String>>): List<OrderItem>? {
         val db = FirebaseFirestore.getInstance()
         var foodItems = mutableListOf<OrderItem>()
         return try {
@@ -119,9 +108,6 @@ object FirebaseService {
             foodItems
         } catch (e: Exception) {
             Log.e(TAG, "Error getting categories", e)
-            FirebaseCrashlytics.getInstance().log("Error getting categories")
-            FirebaseCrashlytics.getInstance().setCustomKey("user id", "xpertSlug")
-            FirebaseCrashlytics.getInstance().recordException(e)
             emptyList()
         }
 
