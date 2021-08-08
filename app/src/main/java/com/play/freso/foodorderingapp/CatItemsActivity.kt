@@ -1,6 +1,8 @@
 package com.play.freso.foodorderingapp
 
+import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -27,7 +29,10 @@ class CatItemsActivity : AppCompatActivity(), CatRecyclerAdapter.OnNoteListener 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_cat_items)
-        user = intent.getStringExtra("user") ?: "whoops :,)"
+
+//        user = intent.getStringExtra("user") ?: "whoops :,)"
+        val sharedPreference: SharedPreferences =  getSharedPreferences("USER_INFO", Context.MODE_PRIVATE)
+        user = sharedPreference.getString("uid", "whoops :,)")!!
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.title = "Food Categories"

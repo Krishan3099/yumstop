@@ -31,7 +31,7 @@ class FoodRecyclerAdapter(onNoteListen: OnNoteListener):  RecyclerView.Adapter<R
         when(holder){
 
             is FoodItemViewHolder ->{
-                holder.bind(items.get(position))
+                holder.bind(items[position])
             }
         }
     }
@@ -74,6 +74,7 @@ class FoodRecyclerAdapter(onNoteListen: OnNoteListener):  RecyclerView.Adapter<R
         override fun onClick(v: View?) {
             onNoteListener.onNoteClick(adapterPosition)
         }
+
     }
 
     interface OnNoteListener {

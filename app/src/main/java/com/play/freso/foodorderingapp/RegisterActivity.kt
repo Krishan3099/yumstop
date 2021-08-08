@@ -1,6 +1,8 @@
 package com.play.freso.foodorderingapp
 
+import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
@@ -21,7 +23,7 @@ class RegisterActivity : AppCompatActivity() {
         setContentView(R.layout.register_activity)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.title = "Register an Account"
-
+        val sharedPreference: SharedPreferences =  getSharedPreferences("USER_INFO", Context.MODE_PRIVATE)
         val viewModel = ViewModelProvider(this)[LoginRegisterViewModel::class.java]
 
 
@@ -69,6 +71,11 @@ class RegisterActivity : AppCompatActivity() {
                     }else{
 
                         Toast.makeText(this, "Registered", Toast.LENGTH_SHORT).show()
+                        val editor = sharedPreference.edit().apply{
+                            putString("uid", it)
+                            apply()
+                        }
+
                         val intent = Intent(this, CatItemsActivity::class.java).apply{
                             putExtra("user", it)
                         }

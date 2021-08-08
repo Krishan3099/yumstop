@@ -19,8 +19,8 @@ class UserOrderViewModel() : ViewModel() {
     private val _order = MutableLiveData<MutableMap<String, ArrayList<String>>>()
     val userProfile: LiveData<User> = _userProfile
     val order:LiveData<MutableMap<String, ArrayList<String>>> = _order
-    private val _orderItems = MutableLiveData<List<OrderItem>>()
-    val orderItems: LiveData<List<OrderItem>> = _orderItems
+    private val _orderItems = MutableLiveData<ArrayList<OrderItem>>()
+    val orderItems: LiveData<ArrayList<OrderItem>> = _orderItems
 
 
     fun loadCart(userid: String) {
@@ -75,7 +75,42 @@ class UserOrderViewModel() : ViewModel() {
 
     }
 
-    fun updateFirestore() {
 
+    //UPDATE _ORDER TOO !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+    fun plusOrderItem(position: Int){
+        val food_id = _orderItems.value!![position].key
+        val quant = _orderItems.value!![position].quantity + 1
+        _orderItems.value!![position].quantity += 1
+        _orderItems.value!![position].totalPrice = _orderItems.value!![position].quantity* _orderItems.value!![position].price!!.toFloat()
+        _order.value!![food_id]!![1] = quant.toString()
+    }
+
+    fun minusOrderItem(position: Int){
+        if(_orderItems.value!![position].quantity > 1)
+        {
+            val food_id = _orderItems.value!![position].key
+            val quant = _orderItems.value!![position].quantity - 1
+            _orderItems.value!![position].quantity -= 1
+            _orderItems.value!![position].totalPrice = _orderItems.value!![position].quantity * _orderItems.value!![position].price!!.toFloat()
+            _order.value!![food_id]!![1] = quant.toString()
+        }
+    }
+
+    fun deleteOrderItem(position: Int) {
+        val food_id = _orderItems.value!![position].key
+        _orderItems.value!!.removeAt(position)
+        _order.value!!.remove(food_id)
+    }
+
+    fun updateFirestoreOrder() {
+        val db = FirebaseFirestore.getInstance()
+        if(!_orderItems.value.isNullOrEmpty()){
+            _orderItems.value!!.forEach {
+                db.collection("orders")
+                    .document(_userProfile.value!!.orderNumber)
+                    .set(_order.value!!)
+            }
+        }
     }
 }

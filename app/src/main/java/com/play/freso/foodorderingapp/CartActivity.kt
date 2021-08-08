@@ -1,5 +1,8 @@
 package com.play.freso.foodorderingapp
 
+import android.app.AlertDialog
+import android.content.Context
+import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -12,7 +15,7 @@ import com.play.freso.foodorderingapp.models.OrderItem
 import com.play.freso.foodorderingapp.viewmodels.UserOrderViewModel
 import kotlinx.android.synthetic.main.activity_cart.*
 
-class CartActivity : AppCompatActivity() {
+class CartActivity : AppCompatActivity(), MyCartAdapter.OnNoteListener {
 
 
     private lateinit var viewModel: UserOrderViewModel
@@ -22,7 +25,8 @@ class CartActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_cart)
-        user_id = intent.getStringExtra("user") ?: "whoops :,)"
+        val sharedPreference: SharedPreferences =  getSharedPreferences("USER_INFO", Context.MODE_PRIVATE)
+        user_id = sharedPreference.getString("uid", "whoops :,)")!!
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.title = "Cart"
@@ -39,8 +43,9 @@ class CartActivity : AppCompatActivity() {
                 adapter = cartAdapter
                 cartAdapter.submitList(it)
             }
-            onLoadCartSuccess(it)
         })
+
+        onLoadCartSuccess()
 
     }
 
@@ -71,12 +76,51 @@ class CartActivity : AppCompatActivity() {
         return super.onContextItemSelected(item)
     }
 
-    private fun onLoadCartSuccess(cartModelList:List<OrderItem>){
+    private fun onLoadCartSuccess(){
         var sum = 0.0
-        for(cartModel in cartModelList!!){
-            sum+= cartModel!!.totalPrice
-        }
-        txtTotal.text = StringBuilder("$").append(sum)
+        viewModel.orderItems.observe(this, {
+            for(cartModel in it!!){
+                sum+= cartModel!!.totalPrice
+            }
+            txtTotal.text = StringBuilder("$").append(sum)
+        })
+    }
 
+
+
+
+    override fun plusCartItem(position: Int) {
+        viewModel.plusOrderItem(position)
+        cartAdapter.notifyDataSetChanged();
+        onLoadCartSuccess()
+    }
+
+    override fun minusCartItem(position: Int) {
+        viewModel.minusOrderItem(position)
+        cartAdapter.notifyDataSetChanged();
+        onLoadCartSuccess()
+//        holder.txtQuantity!!.text = StringBuilder("").append(cartModel.quantity)
+    }
+
+
+    override fun deleteItem(position: Int) {
+        val dialog = AlertDialog.Builder(this)
+            .setTitle("Delete Item")
+            .setMessage("Do you really want to delete item?")
+            .setNegativeButton("Cancel") {dialog, _ -> dialog.dismiss()}
+            .setPositiveButton("Delete") {dialog, _ ->
+//                notifyItemRemoved(position)
+                viewModel.deleteOrderItem(position)
+                cartAdapter.notifyItemRemoved(position);
+                cartAdapter.notifyDataSetChanged();
+                onLoadCartSuccess()
+            }
+            .create()
+        dialog.show()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        viewModel.updateFirestoreOrder()
     }
 }

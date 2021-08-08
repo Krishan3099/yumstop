@@ -89,9 +89,9 @@ object FirebaseService {
         }
     }
 
-    suspend fun getOrderListItems(order: MutableMap<String, ArrayList<String>>): List<OrderItem>? {
+    suspend fun getOrderListItems(order: MutableMap<String, ArrayList<String>>): ArrayList<OrderItem>? {
         val db = FirebaseFirestore.getInstance()
-        var foodItems = mutableListOf<OrderItem>()
+        var foodItems = arrayListOf<OrderItem>()
         return try {
 
             //k -> food_item_id
@@ -108,7 +108,7 @@ object FirebaseService {
             foodItems
         } catch (e: Exception) {
             Log.e(TAG, "Error getting categories", e)
-            emptyList()
+            emptyArray<OrderItem>() as ArrayList<OrderItem>
         }
 
     }

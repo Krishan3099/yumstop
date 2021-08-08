@@ -1,6 +1,8 @@
 package com.play.freso.foodorderingapp
 
 import android.annotation.SuppressLint
+import android.content.Context
+import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -43,9 +45,8 @@ class FoodDetailsActivity : AppCompatActivity() {
 
         val bundle = intent.getBundleExtra("bundle")
         val foodItem = bundle?.getParcelable<FoodItem>("selected_item")
-
-
-        user_id = intent.getStringExtra("user") ?: "whoops :,)"
+        val sharedPreference: SharedPreferences =  getSharedPreferences("USER_INFO", Context.MODE_PRIVATE)
+        user_id = sharedPreference.getString("uid", "whoops :,)")!!
         food_id = foodItem!!.food_id.toString()
 
 

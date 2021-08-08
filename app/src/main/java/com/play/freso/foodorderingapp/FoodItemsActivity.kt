@@ -1,6 +1,8 @@
 package com.play.freso.foodorderingapp
 
+import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -33,7 +35,8 @@ class FoodItemsActivity : AppCompatActivity(), FoodRecyclerAdapter.OnNoteListene
         Log.i("help", "Created")
         setContentView(R.layout.activity_food_items)
         category = intent.getStringExtra("category") ?: "whoops :,)"
-        user = intent.getStringExtra("user") ?: "whoops :,)"
+        val sharedPreference: SharedPreferences =  getSharedPreferences("USER_INFO", Context.MODE_PRIVATE)
+        user = sharedPreference.getString("uid", "whoops :,)")!!
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.title = "${category.uppercase()} ITEMS"

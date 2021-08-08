@@ -1,7 +1,6 @@
 package com.play.freso.foodorderingapp.adapters
 
 import android.app.AlertDialog
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,79 +12,32 @@ import com.play.freso.foodorderingapp.R
 import com.play.freso.foodorderingapp.models.OrderItem
 
 
-class MyCartAdapter(
-    private val context: Context,
-
-): RecyclerView.Adapter<MyCartAdapter.MyCartViewHolder>() {
+class MyCartAdapter(onNoteListen: OnNoteListener): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private var cartModelList: List<OrderItem> = ArrayList()
+    private var onNoteListener: OnNoteListener
 
-    class MyCartViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
-        var btnMinus:ImageView? = null
-        var btnPlus: ImageView? = null
-        var imageView:ImageView? = null
-        var btnDelete:ImageView? = null
-        var txtName:TextView? = null
-        var txtPrice:TextView? = null
-        var txtQuantity:TextView? = null
-
-        init{
-            btnMinus = itemView.findViewById(R.id.btnMinus) as ImageView
-            btnPlus = itemView.findViewById(R.id.btnPlus) as ImageView
-            imageView = itemView.findViewById(R.id.imageView) as ImageView
-            btnDelete = itemView.findViewById(R.id.btnDelete) as ImageView
-            txtName = itemView.findViewById(R.id.txtName) as TextView
-            txtPrice = itemView.findViewById(R.id.txtPrice) as TextView
-            txtQuantity = itemView.findViewById(R.id.txtQuantity) as TextView
-        }
+    init {
+        onNoteListener = onNoteListen
 
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyCartViewHolder {
-        return MyCartViewHolder(LayoutInflater.from(context)
-            .inflate(R.layout.layout_cart_item,parent, false))
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        return MyCartViewHolder(LayoutInflater.from(parent.context)
+            .inflate(R.layout.layout_cart_item,parent, false),
+            onNoteListener
+        )
+
     }
 
-    override fun onBindViewHolder(holder: MyCartViewHolder, position: Int) {
-        Glide.with(context)
-            .load(cartModelList[position].image)
-            .into(holder.imageView!!)
-        holder.txtName!!.text = StringBuilder().append(cartModelList[position].name)
-        holder.txtPrice!!.text = StringBuilder("$").append(cartModelList[position].totalPrice)
-        holder.txtQuantity!!.text = StringBuilder("").append(cartModelList[position].quantity)
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
 
-        //Event
-        holder.btnMinus!!.setOnClickListener{_ -> minusCartItem(holder, cartModelList[position])}
-        holder.btnPlus!!.setOnClickListener{_ -> plusCartItem(holder, cartModelList[position])}
-        holder.btnDelete!!.setOnClickListener{_ ->
-            val dialog = AlertDialog.Builder(context)
-                .setTitle("Delete Item")
-                .setMessage("Do you really want to delete item?")
-                .setNegativeButton("Cancel") {dialog, _ -> dialog.dismiss()}
-                .setPositiveButton("Delete") {dialog, _ ->
-                    notifyItemRemoved(position)
-                }
-                .create()
-            dialog.show()
+        when(holder){
+            is MyCartViewHolder ->{
+                holder.bind(cartModelList[position])
+            }
         }
     }
-
-    private fun plusCartItem(holder: MyCartViewHolder, cartModel: OrderItem) {
-        cartModel.quantity += 1
-        cartModel.totalPrice = cartModel.quantity * cartModel.price!!.toFloat()
-        holder.txtQuantity!!.text = StringBuilder("").append(cartModel.quantity)
-    }
-
-    private fun minusCartItem(holder: MyCartViewHolder, cartModel: OrderItem) {
-        if(cartModel.quantity > 1)
-        {
-            cartModel.quantity -= 1
-            cartModel.totalPrice = cartModel.quantity * cartModel.price!!.toFloat()
-            holder.txtQuantity!!.text = StringBuilder("").append(cartModel.quantity)
-
-        }
-    }
-
 
     override fun getItemCount(): Int {
         return cartModelList.size
@@ -94,4 +46,60 @@ class MyCartAdapter(
     fun submitList(cartList: List<OrderItem>){
         cartModelList = cartList
     }
+
+    class MyCartViewHolder constructor(
+        itemView: View,
+        onNoteListen: OnNoteListener
+    ) : RecyclerView.ViewHolder(itemView), View.OnClickListener{
+        val btnMinus = itemView.findViewById(R.id.btnMinus) as ImageView
+        var btnPlus = itemView.findViewById(R.id.btnPlus) as ImageView
+        var imageView = itemView.findViewById(R.id.imageView) as ImageView
+        var btnDelete = itemView.findViewById(R.id.btnDelete) as ImageView
+        var txtName = itemView.findViewById(R.id.txtName) as TextView
+        var txtPrice = itemView.findViewById(R.id.txtPrice) as TextView
+        var txtQuantity = itemView.findViewById(R.id.txtQuantity) as TextView
+        var onNoteListener: OnNoteListener
+
+
+
+        init{
+            itemView.setOnClickListener(this)
+            onNoteListener = onNoteListen
+        }
+
+
+        fun bind(orderItem: OrderItem){
+            Glide.with(itemView.context)
+                .load(orderItem.image)
+                .into(imageView!!)
+            txtName!!.text = StringBuilder().append(orderItem.name)
+            txtPrice!!.text = StringBuilder("$").append(orderItem.totalPrice)
+            txtQuantity!!.text = StringBuilder("").append(orderItem.quantity)
+
+        }
+
+
+        override fun onClick(v: View?) {
+
+            btnMinus.setOnClickListener{
+                onNoteListener.minusCartItem(adapterPosition)
+            }
+
+            btnPlus.setOnClickListener{
+                onNoteListener.plusCartItem(adapterPosition)
+            }
+
+            btnDelete.setOnClickListener{
+                onNoteListener.deleteItem(adapterPosition)
+            }
+        }
+
+
+    }
+    interface OnNoteListener {
+        fun minusCartItem(position: Int)
+        fun plusCartItem(position: Int)
+        fun deleteItem(position: Int)
+    }
+
 }
