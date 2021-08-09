@@ -58,7 +58,6 @@ data class FoodItem(
                 null
             }
         }
-        private const val TAG = "Food Item"
     }
 
 }

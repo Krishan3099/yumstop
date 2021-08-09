@@ -3,14 +3,18 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/Krishan/AndroidStudioProjects/FoodOrderingApp/app/src/main/res/drawable/background_card_login.xml" value="0.3828125" />
         <entry key="..\:/Users/Krishan/AndroidStudioProjects/FoodOrderingApp/app/src/main/res/drawable/description_box.xml" value="0.30520833333333336" />
+        <entry key="..\:/Users/Krishan/AndroidStudioProjects/FoodOrderingApp/app/src/main/res/drawable/rounded_corner.xml" value="0.3828125" />
         <entry key="..\:/Users/Krishan/AndroidStudioProjects/FoodOrderingApp/app/src/main/res/layout/activity_cart.xml" value="0.2890625" />
         <entry key="..\:/Users/Krishan/AndroidStudioProjects/FoodOrderingApp/app/src/main/res/layout/activity_cat_items.xml" value="0.25" />
         <entry key="..\:/Users/Krishan/AndroidStudioProjects/FoodOrderingApp/app/src/main/res/layout/activity_food_details.xml" value="0.22" />
         <entry key="..\:/Users/Krishan/AndroidStudioProjects/FoodOrderingApp/app/src/main/res/layout/activity_food_items.xml" value="0.2890625" />
         <entry key="..\:/Users/Krishan/AndroidStudioProjects/FoodOrderingApp/app/src/main/res/layout/layout_cart_item.xml" value="0.2890625" />
         <entry key="..\:/Users/Krishan/AndroidStudioProjects/FoodOrderingApp/app/src/main/res/layout/layout_cat_item.xml" value="0.2890625" />
-        <entry key="..\:/Users/Krishan/AndroidStudioProjects/FoodOrderingApp/app/src/main/res/layout/register_activity.xml" value="0.36666666666666664" />
+        <entry key="..\:/Users/Krishan/AndroidStudioProjects/FoodOrderingApp/app/src/main/res/layout/login_activity.xml" value="0.22" />
+        <entry key="..\:/Users/Krishan/AndroidStudioProjects/FoodOrderingApp/app/src/main/res/layout/register_activity.xml" value="0.22" />
+        <entry key="..\:/Users/Krishan/AndroidStudioProjects/FoodOrderingApp/app/src/main/res/menu/menu.xml" value="0.36666666666666664" />
       </map>
     </option>
   </component>

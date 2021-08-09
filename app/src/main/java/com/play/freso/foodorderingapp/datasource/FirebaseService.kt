@@ -6,7 +6,6 @@ import com.play.freso.foodorderingapp.models.FoodItem
 import com.play.freso.foodorderingapp.models.FoodItem.CREATOR.toFoodItem
 import com.play.freso.foodorderingapp.models.OrderItem
 import com.play.freso.foodorderingapp.models.OrderItem.Companion.toOrderItem
-
 import com.play.freso.foodorderingapp.models.User
 import com.play.freso.foodorderingapp.models.User.Companion.toUser
 import kotlinx.coroutines.tasks.await
@@ -18,7 +17,6 @@ object FirebaseService {
     suspend fun getProfileData(userId: String): User? {
         val db = FirebaseFirestore.getInstance()
         return try {
-            Log.d("pikachu", "$userId")
             db.collection("users")
                 .document(userId).get().await().toUser()
         } catch (e: Exception) {
@@ -69,17 +67,9 @@ object FirebaseService {
             db.collection("orders")
                 .document(order_number)
                 .get().await().data!!.forEach{
-                    val item_key = it.key.toString()
+                    val itemKey = it.key.toString()
                     val item: ArrayList<String> = it.value as ArrayList<String>
-                    orderItems[item_key] = item
-
-
-//                    var key:String= "",
-//    var name:String= "",
-//    var image:String= "",
-//    var price:String= "",
-//    var quantity: Int = 0,
-//    var totalPrice: Float = 0f
+                    orderItems[itemKey] = item
 
                 }
             orderItems
@@ -112,8 +102,4 @@ object FirebaseService {
         }
 
     }
-
-
-    //maybe this or maybe just have another dao for orders
-
 }

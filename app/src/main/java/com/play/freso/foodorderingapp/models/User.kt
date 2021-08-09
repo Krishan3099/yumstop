@@ -10,7 +10,6 @@ data class User (val userid: String = "",
     companion object {
         fun DocumentSnapshot.toUser(): User? {
             return try {
-                Log.d(TAG, "poop${id} ${getString("name")} ${getString("order_number")}Error converting user profile")
                 val name = getString("name")!!
                 val orderNumber = getString("order_number")!!
                 User(id, name, orderNumber)
@@ -19,7 +18,7 @@ data class User (val userid: String = "",
                 null
             }
         }
-        private const val TAG = "UserBill"
+        private const val TAG = "UserProfile"
     }
 
 

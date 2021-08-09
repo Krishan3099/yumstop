@@ -1,29 +1,22 @@
 package com.play.freso.foodorderingapp
 
 import android.annotation.SuppressLint
+import android.app.AlertDialog
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
+import android.view.Menu
+import android.view.MenuInflater
 import android.view.MenuItem
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
-import com.google.firebase.firestore.ktx.firestore
-import com.google.firebase.ktx.Firebase
 import com.play.freso.foodorderingapp.models.FoodItem
-import com.play.freso.foodorderingapp.viewmodels.FoodItemListViewModel
 import com.play.freso.foodorderingapp.viewmodels.UserOrderViewModel
 import kotlinx.android.synthetic.main.activity_food_details.*
 import kotlinx.android.synthetic.main.activity_food_details.food_price
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import com.google.android.gms.tasks.Tasks
-import kotlinx.coroutines.tasks.await
-
-import com.google.firebase.auth.AuthResult
-import java.util.concurrent.ExecutionException
 
 
 class FoodDetailsActivity : AppCompatActivity() {
@@ -40,6 +33,8 @@ class FoodDetailsActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_food_details)
+
+        setSupportActionBar(findViewById(R.id.my_toolbar))
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.title = "Item Details"
 
@@ -51,8 +46,6 @@ class FoodDetailsActivity : AppCompatActivity() {
 
 
         viewModel = ViewModelProvider(this)[UserOrderViewModel::class.java]
-
-
         viewModel.loadCart(user_id)
 
 
@@ -73,20 +66,12 @@ class FoodDetailsActivity : AppCompatActivity() {
             num_items_text.setText(quantity.toString())
         }
 
-
-
         add_button.setOnClickListener{
 
                 viewModel.addToOrder(food_id, quantity)
 
             onBackPressed()
         }
-
-
-
-
-
-
 
     }
 
@@ -111,15 +96,44 @@ class FoodDetailsActivity : AppCompatActivity() {
     }
 
 
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        val inflater: MenuInflater = menuInflater
+        inflater.inflate(R.menu.menu, menu)
+        return true
+    }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            android.R.id.home -> {
+        return when (item.itemId) {
+            R.id.home -> {
                 onBackPressed()
-                return true
+                true
             }
+
+            R.id.action_cart -> {
+                startActivity(Intent(this, CartActivity::class.java))
+                true
+            }
+            R.id.action_logout -> {
+                val dialog = AlertDialog.Builder(this)
+                    .setTitle("Logout")
+                    .setMessage("Do you really want to logout?")
+                    .setNegativeButton("Cancel") {dialog, _ -> dialog.dismiss()}
+                    .setPositiveButton("Logout") { _, _ ->
+                        getSharedPreferences("USER_INFO", Context.MODE_PRIVATE).edit().apply {
+                            clear()
+                            apply()
+                        }
+                        startActivity(Intent(this, LoginActivity::class.java))
+                        finish()
+                    }
+                    .create()
+                dialog.show()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
         }
-        return super.onContextItemSelected(item)
     }
+
+
 
 }

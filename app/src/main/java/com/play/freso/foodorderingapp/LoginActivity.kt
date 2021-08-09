@@ -50,7 +50,7 @@ class LoginActivity : AppCompatActivity() {
 
                     }else{
 
-                        val editor = sharedPreference.edit().apply{
+                        sharedPreference.edit().apply{
                             putString("uid", it)
                             apply()
                         }

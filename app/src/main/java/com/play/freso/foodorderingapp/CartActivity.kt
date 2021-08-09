@@ -1,17 +1,19 @@
 package com.play.freso.foodorderingapp
 
+import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
+import android.view.Menu
+import android.view.MenuInflater
 import android.view.MenuItem
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.play.freso.foodorderingapp.adapters.MyCartAdapter
-import com.play.freso.foodorderingapp.models.OrderItem
 import com.play.freso.foodorderingapp.viewmodels.UserOrderViewModel
 import kotlinx.android.synthetic.main.activity_cart.*
 
@@ -28,6 +30,7 @@ class CartActivity : AppCompatActivity(), MyCartAdapter.OnNoteListener {
         val sharedPreference: SharedPreferences =  getSharedPreferences("USER_INFO", Context.MODE_PRIVATE)
         user_id = sharedPreference.getString("uid", "whoops :,)")!!
 
+        setSupportActionBar(findViewById(R.id.my_toolbar))
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.title = "Cart"
 
@@ -50,11 +53,6 @@ class CartActivity : AppCompatActivity(), MyCartAdapter.OnNoteListener {
     }
 
     private fun init(){
-//        val layoutManager = LinearLayoutManager(this)
-//        recycler_cart!!.layoutManager = layoutManager
-//        recycler_cart!!.addItemDecoration(DividerItemDecoration(this, layoutManager.orientation))
-//        cartAdapter = MyCartAdapter(this, cartModelList)
-//        recycler_cart!!.adapter = cartAdapter
 
         recycler_cart.apply{
             layoutManager = LinearLayoutManager(this@CartActivity)
@@ -66,23 +64,13 @@ class CartActivity : AppCompatActivity(), MyCartAdapter.OnNoteListener {
 
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            android.R.id.home -> {
-                onBackPressed()
-                return true
-            }
-        }
-        return super.onContextItemSelected(item)
-    }
-
     private fun onLoadCartSuccess(){
         var sum = 0.0
         viewModel.orderItems.observe(this, {
             for(cartModel in it!!){
-                sum+= cartModel!!.totalPrice
+                sum+= cartModel.totalPrice
             }
-            txtTotal.text = StringBuilder("$").append(sum)
+            txtTotal.text = StringBuilder("$").append("%.2f".format(sum))
         })
     }
 
@@ -91,13 +79,13 @@ class CartActivity : AppCompatActivity(), MyCartAdapter.OnNoteListener {
 
     override fun plusCartItem(position: Int) {
         viewModel.plusOrderItem(position)
-        cartAdapter.notifyDataSetChanged();
+        cartAdapter.notifyDataSetChanged()
         onLoadCartSuccess()
     }
 
     override fun minusCartItem(position: Int) {
         viewModel.minusOrderItem(position)
-        cartAdapter.notifyDataSetChanged();
+        cartAdapter.notifyDataSetChanged()
         onLoadCartSuccess()
 //        holder.txtQuantity!!.text = StringBuilder("").append(cartModel.quantity)
     }
@@ -109,10 +97,10 @@ class CartActivity : AppCompatActivity(), MyCartAdapter.OnNoteListener {
             .setMessage("Do you really want to delete item?")
             .setNegativeButton("Cancel") {dialog, _ -> dialog.dismiss()}
             .setPositiveButton("Delete") {dialog, _ ->
-//                notifyItemRemoved(position)
+
                 viewModel.deleteOrderItem(position)
-                cartAdapter.notifyItemRemoved(position);
-                cartAdapter.notifyDataSetChanged();
+                cartAdapter.notifyItemRemoved(position)
+                cartAdapter.notifyDataSetChanged()
                 onLoadCartSuccess()
             }
             .create()
@@ -122,5 +110,51 @@ class CartActivity : AppCompatActivity(), MyCartAdapter.OnNoteListener {
     override fun onPause() {
         super.onPause()
         viewModel.updateFirestoreOrder()
+        onBackPressed()
+    }
+
+
+    override fun onPrepareOptionsMenu(menu: Menu): Boolean {
+        super.onPrepareOptionsMenu(menu)
+        val item = menu.findItem(R.id.action_cart)
+        item.isVisible = false
+        return true
+    }
+
+
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        val inflater: MenuInflater = menuInflater
+        inflater.inflate(R.menu.menu, menu)
+        return true
+    }
+
+
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.home -> {
+                onBackPressed()
+                true
+            }
+            R.id.action_logout -> {
+                val dialog = AlertDialog.Builder(this)
+                    .setTitle("Logout")
+                    .setMessage("Do you really want to logout?")
+                    .setNegativeButton("Cancel") {dialog, _ -> dialog.dismiss()}
+                    .setPositiveButton("Logout") { _, _ ->
+                        getSharedPreferences("USER_INFO", Context.MODE_PRIVATE).edit().apply {
+                            clear()
+                            apply()
+                        }
+                        startActivity(Intent(this, LoginActivity::class.java))
+                        finish()
+                    }
+                    .create()
+                dialog.show()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
     }
 }

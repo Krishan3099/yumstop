@@ -28,7 +28,7 @@ class CatRecyclerAdapter(onNoteListen: OnNoteListener): RecyclerView.Adapter<Rec
         when(holder){
 
             is CatItemViewHolder ->{
-                holder.bind(items.get(position))
+                holder.bind(items[position])
             }
         }
     }
@@ -47,8 +47,8 @@ class CatRecyclerAdapter(onNoteListen: OnNoteListener): RecyclerView.Adapter<Rec
         onNoteListen: OnNoteListener
     ): RecyclerView.ViewHolder(catView), View.OnClickListener{
 
-        val cat_name = itemView.findViewById<TextView>(R.id.cat_name)
-        var onNoteListener: OnNoteListener
+        private val catName = itemView.findViewById<TextView>(R.id.cat_name)
+        private var onNoteListener: OnNoteListener
 
         init {
             catView.setOnClickListener(this)
@@ -57,8 +57,8 @@ class CatRecyclerAdapter(onNoteListen: OnNoteListener): RecyclerView.Adapter<Rec
 
 
 
-        fun bind(catName: String){
-            cat_name.setText(catName)
+        fun bind(cat_name: String){
+            catName.text = cat_name
         }
 
         override fun onClick(v: View?) {

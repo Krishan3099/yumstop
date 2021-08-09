@@ -71,7 +71,7 @@ class RegisterActivity : AppCompatActivity() {
                     }else{
 
                         Toast.makeText(this, "Registered", Toast.LENGTH_SHORT).show()
-                        val editor = sharedPreference.edit().apply{
+                        sharedPreference.edit().apply{
                             putString("uid", it)
                             apply()
                         }

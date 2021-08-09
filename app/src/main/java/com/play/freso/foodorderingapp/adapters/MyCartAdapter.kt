@@ -1,6 +1,5 @@
 package com.play.freso.foodorderingapp.adapters
 
-import android.app.AlertDialog
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -51,14 +50,14 @@ class MyCartAdapter(onNoteListen: OnNoteListener): RecyclerView.Adapter<Recycler
         itemView: View,
         onNoteListen: OnNoteListener
     ) : RecyclerView.ViewHolder(itemView), View.OnClickListener{
-        val btnMinus = itemView.findViewById(R.id.btnMinus) as ImageView
-        var btnPlus = itemView.findViewById(R.id.btnPlus) as ImageView
-        var imageView = itemView.findViewById(R.id.imageView) as ImageView
-        var btnDelete = itemView.findViewById(R.id.btnDelete) as ImageView
-        var txtName = itemView.findViewById(R.id.txtName) as TextView
-        var txtPrice = itemView.findViewById(R.id.txtPrice) as TextView
-        var txtQuantity = itemView.findViewById(R.id.txtQuantity) as TextView
-        var onNoteListener: OnNoteListener
+        private val btnMinus = itemView.findViewById(R.id.btnMinus) as ImageView
+        private var btnPlus = itemView.findViewById(R.id.btnPlus) as ImageView
+        private var imageView = itemView.findViewById(R.id.imageView) as ImageView
+        private var btnDelete = itemView.findViewById(R.id.btnDelete) as ImageView
+        private var txtName = itemView.findViewById(R.id.txtName) as TextView
+        private var txtPrice = itemView.findViewById(R.id.txtPrice) as TextView
+        private var txtQuantity = itemView.findViewById(R.id.txtQuantity) as TextView
+        private var onNoteListener: OnNoteListener
 
 
 
@@ -71,10 +70,10 @@ class MyCartAdapter(onNoteListen: OnNoteListener): RecyclerView.Adapter<Recycler
         fun bind(orderItem: OrderItem){
             Glide.with(itemView.context)
                 .load(orderItem.image)
-                .into(imageView!!)
-            txtName!!.text = StringBuilder().append(orderItem.name)
-            txtPrice!!.text = StringBuilder("$").append(orderItem.totalPrice)
-            txtQuantity!!.text = StringBuilder("").append(orderItem.quantity)
+                .into(imageView)
+            txtName.text = StringBuilder().append(orderItem.name)
+            txtPrice.text = StringBuilder("$").append("%.2f".format(orderItem.totalPrice))
+            txtQuantity.text = StringBuilder("").append(orderItem.quantity)
 
         }
 

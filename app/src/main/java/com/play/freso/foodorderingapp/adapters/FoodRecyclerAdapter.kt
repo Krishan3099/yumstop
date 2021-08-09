@@ -48,18 +48,18 @@ class FoodRecyclerAdapter(onNoteListen: OnNoteListener):  RecyclerView.Adapter<R
         itemView: View,
         onNoteListen: OnNoteListener
     ): RecyclerView.ViewHolder(itemView), View.OnClickListener{
-        val food_image = itemView.findViewById<ImageView>(R.id.food_image)
-        val food_name = itemView.findViewById<TextView>(R.id.food_name)
-        val food_price = itemView.findViewById<TextView>(R.id.food_price)
-        var onNoteListener: OnNoteListener
+        private val foodImage = itemView.findViewById<ImageView>(R.id.food_image)
+        private val foodName = itemView.findViewById<TextView>(R.id.food_name)
+        private val foodPrice = itemView.findViewById<TextView>(R.id.food_price)
+        private var onNoteListener: OnNoteListener
 
         init {
             itemView.setOnClickListener(this)
             onNoteListener = onNoteListen
         }
         fun bind(foodItemPost: FoodItem){
-            food_name.setText(foodItemPost.name)
-            food_price.setText(foodItemPost.price.toString())
+            foodName.text = foodItemPost.name
+            foodPrice.text = foodItemPost.price.toString()
 
             val requestOptions = RequestOptions()
                 .placeholder(R.drawable.ic_launcher_background)
@@ -68,7 +68,7 @@ class FoodRecyclerAdapter(onNoteListen: OnNoteListener):  RecyclerView.Adapter<R
             Glide.with(itemView.context)
                 .applyDefaultRequestOptions(requestOptions)
                 .load(foodItemPost.img)
-                .into(food_image)
+                .into(foodImage)
         }
 
         override fun onClick(v: View?) {
